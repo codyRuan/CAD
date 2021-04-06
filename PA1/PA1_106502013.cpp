@@ -79,6 +79,7 @@ int main(int argc, char *argv[])
 
     infile.close();
 
+    outfile << "`timescale 1ns / 1ps" << '\n';
     /**  print module  **/
     string outfilename = allarg[1].substr(0, allarg[1].find('.'));
     outfile << "module " << outfilename << " (";
@@ -106,6 +107,7 @@ int main(int argc, char *argv[])
         cnt ++;
         string tmp(p.first);
         transform(p.first.begin(), p.first.end(), tmp.begin(), ::tolower);
+        if (tmp == "buff") tmp = "buf";
         outfile << tmp << " " << p.first << p.second.size()-1 << '_' << cnt << " (";
         tmp_cnt = 0;
         for(string s : p.second){
@@ -115,7 +117,7 @@ int main(int argc, char *argv[])
         }
         outfile << ';' << '\n';
     }
-    outfile << '\n' << "endmodule";
+    outfile << '\n' << "endmodule" << '\n';
     cout << "done" << endl;
     outfile.close();
 
@@ -178,6 +180,6 @@ void writeToFile(ofstream &outfile, set<int> Set, int b){
         cnt++;
         outfile << 'N' << s;
         if(cnt != Set.size()) outfile << ',';
-        if(cnt % 10 == 0) outfile << '\n' << blank(b);
+        if(cnt % 10 == 0 && cnt != Set.size()) outfile << '\n' << blank(b);
     }
 }
