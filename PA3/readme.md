@@ -1,6 +1,6 @@
 usage  
  $ make  
- $ ./PA3_106502013 testcase result  
+ $ ./QM testcase result  
 
 testcase formate:  
 INORDER = a b c d; //input variables  
