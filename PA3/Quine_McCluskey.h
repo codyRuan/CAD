@@ -17,7 +17,7 @@ private:
 
     void getMinLogic();
     void createTable();
-    void merge(int round);
+    void merge();
     string compare(string c, string n);
     void make_POS();
     void POS2SOP();

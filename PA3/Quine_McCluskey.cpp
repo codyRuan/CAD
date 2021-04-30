@@ -12,45 +12,43 @@ bool compareSize(const set<string> a,const set<string> b){
 
 void QMcCluskey::QMAlgo(){
     for(int i = 0; i < boolFun.size()-2; i++){
-        merge(i);
+        merge();
         // cout << "round" << i+1 << endl;
         // printAns();
     }
 }
 
-void QMcCluskey::merge(int round){
+void QMcCluskey::merge(){
     vector<set<pair<string,set<unsigned int>>>> tmpvec(boolFun);
+    vector<pair<string,set<unsigned int>>> canBeMerged;
     boolFun.clear();
     boolFun.resize(tmpvec.size());
     bool CanMerge = false;
     for(int i = 0; i < tmpvec.size()-1; i++){
         set<pair<string,set<unsigned int>>> currentSet, nextSet;
-        int idx;
-        if(i != tmpvec.size()-round-1){ // 判斷是不是本輪最後一個
-            currentSet = tmpvec.at(i);
-            nextSet = tmpvec.at(i+1);
-            idx = i;
-        }
-        else{
-            currentSet = tmpvec.at(i);
-            nextSet = tmpvec.at(i-1);
-            idx = i-1;
-        }
+        currentSet = tmpvec.at(i);
+        nextSet = tmpvec.at(i+1);
         for(pair<string,set<unsigned int>> currentPair : currentSet){
             CanMerge = false;
             for(pair<string,set<unsigned int>> nextPair : nextSet){
                 set<unsigned int> tmp_m = currentPair.second;
                 string tmp = compare(currentPair.first, nextPair.first);
                 if(!tmp.empty()){
-                    for(unsigned int i : nextPair.second)
-                        tmp_m.insert(i);
-                    boolFun.at(idx).insert(make_pair(tmp,tmp_m));
+                    for(unsigned int ui : nextPair.second)
+                        tmp_m.insert(ui);
+                    boolFun.at(i).insert(make_pair(tmp,tmp_m));
                     CanMerge = true;
+                    canBeMerged.push_back(nextPair);
                 }
             }
             if(!CanMerge)
                 implicants.push_back(make_pair(currentPair.first, currentPair.second));
         }
+    }
+    for(pair<string,set<unsigned int>> cm: canBeMerged){
+        auto it = find(implicants.begin(), implicants.end(), cm);
+        if(it != implicants.end())
+            implicants.erase(find(implicants.begin(), implicants.end(), cm));
     }
 }
 
@@ -72,6 +70,7 @@ string QMcCluskey::compare(string c, string n){
 
 void QMcCluskey::Petrick_Method(){
     createTable();
+    printTable();
     make_POS();
     POS2SOP();
     getMinLogic();
